@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema-instance">
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <meta>
+      <creator>NetworkX 2.0</creator>
+      <lastmodified>01/05/2020</lastmodified>
+    </meta>
+    <nodes>
+      <node id="R. Holding" label="R. Holding" />
+      <node id="Mohamed Elneny" label="Mohamed Elneny" />
+      <node id="D. Welbeck" label="D. Welbeck" />
+      <node id="S. Kola\u0161inac" label="S. Kola\u0161inac" />
+      <node id="A. Lacazette" label="A. Lacazette" />
+      <node id="A. Oxlade-Chamberlain" label="A. Oxlade-Chamberlain" />
+      <node id="Nacho Monreal" label="Nacho Monreal" />
+      <node id="Beller\u00edn" label="Beller\u00edn" />
+      <node id="M. \u00d6zil" label="M. \u00d6zil" />
+      <node id="P. \u010cech" label="P. \u010cech" />
+      <node id="G. Xhaka" label="G. Xhaka" />
+    </nodes>
+    <edges>
+      <edge id="0" source="R. Holding" target="Mohamed Elneny" weight="16" />
+      <edge id="1" source="R. Holding" target="D. Welbeck" weight="1" />
+      <edge id="2" source="R. Holding" target="S. Kola\u0161inac" weight="3" />
+      <edge id="3" source="R. Holding" target="A. Lacazette" weight="1" />
+      <edge id="4" source="R. Holding" target="A. Oxlade-Chamberlain" weight="1" />
+      <edge id="5" source="R. Holding" target="Nacho Monreal" weight="17" />
+      <edge id="6" source="R. Holding" target="Beller\u00edn" weight="15" />
+      <edge id="7" source="R. Holding" target="M. \u00d6zil" weight="8" />
+      <edge id="8" source="R. Holding" target="P. \u010cech" weight="3" />
+      <edge id="9" source="R. Holding" target="G. Xhaka" weight="8" />
+      <edge id="10" source="Mohamed Elneny" target="D. Welbeck" weight="3" />
+      <edge id="11" source="Mohamed Elneny" target="S. Kola\u0161inac" weight="9" />
+      <edge id="12" source="Mohamed Elneny" target="A. Lacazette" weight="2" />
+      <edge id="13" source="Mohamed Elneny" target="A. Oxlade-Chamberlain" weight="6" />
+      <edge id="14" source="Mohamed Elneny" target="Nacho Monreal" weight="12" />
+      <edge id="15" source="Mohamed Elneny" target="Beller\u00edn" weight="18" />
+      <edge id="16" source="Mohamed Elneny" target="M. \u00d6zil" weight="4" />
+      <edge id="17" source="Mohamed Elneny" target="P. \u010cech" weight="1" />
+      <edge id="18" source="Mohamed Elneny" target="G. Xhaka" weight="22" />
+      <edge id="19" source="D. Welbeck" target="S. Kola\u0161inac" weight="1" />
+      <edge id="20" source="D. Welbeck" target="A. Oxlade-Chamberlain" weight="3" />
+      <edge id="21" source="D. Welbeck" target="M. \u00d6zil" weight="2" />
+      <edge id="22" source="D. Welbeck" target="G. Xhaka" weight="6" />
+      <edge id="23" source="S. Kola\u0161inac" target="A. Lacazette" weight="1" />
+      <edge id="24" source="S. Kola\u0161inac" target="A. Oxlade-Chamberlain" weight="8" />
+      <edge id="25" source="S. Kola\u0161inac" target="Nacho Monreal" weight="20" />
+      <edge id="26" source="S. Kola\u0161inac" target="Beller\u00edn" weight="5" />
+      <edge id="27" source="S. Kola\u0161inac" target="M. \u00d6zil" weight="17" />
+      <edge id="28" source="S. Kola\u0161inac" target="P. \u010cech" weight="1" />
+      <edge id="29" source="S. Kola\u0161inac" target="G. Xhaka" weight="12" />
+      <edge id="30" source="A. Lacazette" target="A. Oxlade-Chamberlain" weight="1" />
+      <edge id="31" source="A. Lacazette" target="Beller\u00edn" weight="2" />
+      <edge id="32" source="A. Lacazette" target="M. \u00d6zil" weight="7" />
+      <edge id="33" source="A. Lacazette" target="G. Xhaka" weight="4" />
+      <edge id="34" source="A. Oxlade-Chamberlain" target="Nacho Monreal" weight="6" />
+      <edge id="35" source="A. Oxlade-Chamberlain" target="Beller\u00edn" weight="1" />
+      <edge id="36" source="A. Oxlade-Chamberlain" target="M. \u00d6zil" weight="4" />
+      <edge id="37" source="A. Oxlade-Chamberlain" target="P. \u010cech" weight="1" />
+      <edge id="38" source="A. Oxlade-Chamberlain" target="G. Xhaka" weight="10" />
+      <edge id="39" source="Nacho Monreal" target="M. \u00d6zil" weight="5" />
+      <edge id="40" source="Nacho Monreal" target="P. \u010cech" weight="3" />
+      <edge id="41" source="Nacho Monreal" target="G. Xhaka" weight="10" />
+      <edge id="42" source="Beller\u00edn" target="M. \u00d6zil" weight="14" />
+      <edge id="43" source="Beller\u00edn" target="P. \u010cech" weight="1" />
+      <edge id="44" source="Beller\u00edn" target="G. Xhaka" weight="9" />
+      <edge id="45" source="M. \u00d6zil" target="P. \u010cech" weight="2" />
+      <edge id="46" source="M. \u00d6zil" target="G. Xhaka" weight="24" />
+    </edges>
+  </graph>
+</gexf>

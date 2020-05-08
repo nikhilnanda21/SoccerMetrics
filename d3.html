@@ -29,7 +29,7 @@ var svg = d3.select("svg"),
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(linkDistance).strength(0.1))
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -48,7 +48,7 @@ d3.json("sample.json", function(error, graph) {
     .selectAll("g")
     .data(graph.nodes)
     .enter().append("g")
-    
+
   var circles = node.append("circle")
       .attr("r", 5)
       .attr("fill", function(d) { return color(d.group); })
@@ -103,6 +103,11 @@ function dragended(d) {
   if (!d3.event.active) simulation.alphaTarget(0);
   d.fx = null;
   d.fy = null;
+}
+
+function linkDistance(d) {
+    // return d.value*30;
+  return 500/d.value;
 }
 
 </script>

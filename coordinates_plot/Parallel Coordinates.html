@@ -1,0 +1,385 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style>
+        #myInput {
+        background-image: url('./css/searchicon.png'); /* Add a search icon to input */
+        background-position: 13px 10px; /* Position the search icon */
+        background-repeat: no-repeat; /* Do not repeat the icon image */
+        background-size: 20px 20px;
+        position:absolute;
+        left:950px;
+        top:200px;
+        width:15%;
+        font-size: 13.8px; /* Increase font-size */
+        padding: 12px 20px 12px 40px; /* Add some padding */
+        border: 1px solid #ddd; /* Add a grey border */
+        }
+
+        #teamList {
+        /* Remove default list styling */
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        position:absolute;
+        left:950px;
+        top:242px;
+        height:200px;
+        width:20%;
+        overflow:hidden;
+        overflow-y:scroll;
+        }
+
+        #teamList li {
+        border: 1px solid #ddd; /* Add a border to all links */
+        margin-top: -1px; /* Prevent double borders */
+        background-color: #f6f6f6; /* Grey background color */
+        padding: 12px; /* Add some padding */
+        text-decoration: none; /* Remove default text underline */
+        color: black; /* Add a black text color */
+        display: block; /* Make it into a block element to fill the whole list */
+        }
+
+        #teamList li:hover:not(.header) {
+        background-color: #eee; /* Add a hover effect to all links, except for headers */
+        }
+
+        body {
+		  overflow: hidden;
+		  margin: 0;
+		  font-size: 14px;
+		  font-family: "Helvetica Neue", Helvetica;
+		}
+
+		#chart {
+		  position: absolute;
+		  top: 50px;
+		  left: 100px;
+		}	
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+            }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+           background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+    
+
+    </style>
+     <!-- Load d3.js -->
+     <script src="https://d3js.org/d3.v4.js"></script>
+     <script src="team_attributes.js"></script>
+	<style>
+		body {
+		  overflow: hidden;
+		  margin: 0;
+		  font-size: 14px;
+		  font-family: "Helvetica Neue", Helvetica;
+		}
+    .axis {
+      opacity: 0.4;
+    }
+    .axis:hover {
+      opacity: 1;
+    }
+
+    div.tooltip {	
+      position: absolute;			
+      text-align: center;			
+      min-width: 50px;					
+      min-height: 14px;					
+      padding: 8px;				
+      font: 12px sans-serif;		
+      background: lightsteelblue;	
+      border: 0px;		
+      border-radius: 8px;			
+      pointer-events: none;			
+    }
+	</style>
+  </head>
+
+<body>
+  <div id="my_dataviz"></div>
+  <input type="text" id="myInput" onkeyup="searchTeam()" placeholder="Search for teams..">
+  <ul id="teamList"></ul>
+  <script>
+    // set the dimensions and margins of the graph
+    var margin = {top: 30, right: 50, bottom: 10, left: 50},
+      width = 900 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
+    
+    // append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+    
+    
+    var dimensions = ["buildUpPlaySpeed", "buildUpPlayPassing", "chanceCreationPassing", "chanceCreationCrossing", "chanceCreationShooting", "defencePressure", "defenceAggression", "defenceTeamWidth"]
+    
+    
+    // Color scale: give me a specie name, I return a color
+    var color = d3.scaleOrdinal(['#003366', '#ff0000','#ff8000'])
+    
+    var labels = [ 'Build-up Play Speed', 'Build-up Play Passing',
+           'Chance Creation Passing', 'Chance Creation Crossing',
+           'Chance Creation Shooting', 'Defence Pressure', 'Defence Aggression',
+           'Defence Team Width']
+    
+    var div = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+  
+    // For each dimension, I build a linear scale. I store all in a y object
+    var y = {}
+    for (i in dimensions) {
+      name = dimensions[i]
+      y[name] = d3.scaleLinear()
+        .domain( [25,80] ) // --> Same axis range for each group
+        // --> different axis range for each group --> .domain( [d3.extent(data, function(d) { return +d[name]; })] )
+        .range([height, 0])
+    }
+    
+    // Build the X scale -> it find the best position for each Y axis
+    x = d3.scalePoint()
+      .range([0, width])
+      .domain(dimensions);
+    
+    // Highlight the specie that is hovered
+    var highlight = function(d){
+      selected_team = d.team_long_name.replace(/[^\w]/gi, '')
+    
+      //first every group turns grey
+      d3.selectAll(".line")
+        .transition().duration(200)
+        .style("stroke", "lightgrey")
+        .style("opacity", "0.05")
+      // Second the hovered specie takes its color
+      console.log(d3.selectAll("." + selected_team))
+      d3.selectAll("." + selected_team)
+        .transition().duration(200)
+        .style("stroke", color(1))
+        .style("opacity", "2")
+      
+      div.transition().duration(200)		
+          .style("opacity", .9);		
+      div.html(d.team_long_name)	
+        .style("left", (d3.event.pageX) + "px")		
+        .style("top", (d3.event.pageY - 28) + "px");	
+      }
+      // Unhighlight
+    var doNotHighlight = function(d){
+      d3.selectAll(".line")
+        .transition().duration(300).delay(500)
+        .style("stroke", color(0) )
+        .style("opacity", "0.8")
+      div.transition().duration(300)	
+          .style("opacity", 0);	
+    }
+    
+    // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+    function path(d) {
+      return d3.line()(dimensions.map(function(p) {
+        return [x(p), y[p](d[p])]; 
+      }));
+    }
+    
+    // Draw the lines
+    svg.selectAll("myPath")
+      .data(team_attributes)
+      .enter()
+      .append("path")
+        .attr("class", function (d) { return "line " + d.team_long_name.replace(/[^\w]/gi, '') } ) // 2 class for each line: 'line' and the group name
+        .attr("id", function(d){return "id_" + d.team_long_name.replace(/[^\w]/gi, '')})
+        .attr("d",  path)
+        .style("fill", "none" )
+        .style("stroke", function(d){ return( color(0))} )
+        .style("opacity", 0.8)
+        .on("mouseover", highlight)
+        .on("mouseleave", doNotHighlight )
+    
+    // team_attributes.forEach(d=> {
+    //   id = "id_" + d.team_long_name.replace(/[^\w]/gi, '')
+    //   d3.append("span")	
+    //       .attr("class", "tooltip")				
+    //       .style("opacity", 1)
+    //       .style("left", (400) + "px")		
+    //       .style("top", (parseFloat(document.getElementById(id).getAttribute("d").split(",")[8])+28) + "px")
+    //       .html(d.team_long_name)
+    // });
+    // Draw the axis:
+    svg.selectAll("myAxis")
+      // For each dimension of the dataset I add a 'g' element:
+      .data(dimensions).enter()
+      .append("g")
+      .attr("class", "axis")
+      // I translate this element to its right position on the x axis
+      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+      // And I build the axis with the call function
+      .each(function(d) { d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d])); })
+      // Add axis title
+      .append("text")
+        .style("text-anchor", "middle")
+        .attr("y", -9)
+        .text(function(d) { 
+          var index = dimensions.indexOf(d)
+          return labels[index]; })
+        .style("fill", "black")
+    
+    </script>
+    <script>
+
+      var checkCount = 0;
+      function searchTeam() {
+        // Declare variables
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('myInput');
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("teamList");
+        li = ul.getElementsByTagName('li');
+      
+        // Loop through all list items, and hide those who don't match the search query
+        for (i = 0; i < li.length; i++) {
+          txtValue = li[i].textContent || li[i].innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+          } else {
+            li[i].style.display = "none";
+          }
+        }
+      }
+      
+      var highlight_team = function(selected_team){    
+        //first every group turns grey
+        selected_team = selected_team.replace(/[^\w]/gi, '')
+        if(checkCount === 0){
+          d3.selectAll(".line")
+          .transition().duration(100)
+          .style("stroke", "lightgrey")
+          .style("opacity", "0.05")
+        // Second the hovered specie takes its color
+        }
+        if(checkCount >= 1){
+          d3.selectAll("." + selected_team)
+          .transition().duration(100)
+          .style("stroke", color(2))
+          .style("opacity", "2")
+        }
+        else{
+          d3.selectAll("." + selected_team)
+          .transition().duration(100)
+          .style("stroke", color(1))
+          .style("opacity", "2")
+        }
+      }
+
+
+        // Unhighlight
+      var unHighlight_teams = function(selected_team){
+        selected_team = selected_team.replace(/[^\w]/gi, '')
+        if(checkCount === 0){
+          d3.selectAll(".line")
+          .transition().duration(100)
+          .style("stroke", color(0) )
+          .style("opacity", "0.8")
+        }
+        d3.selectAll("." + selected_team)
+          .transition().duration(100)
+          .style("stroke", "lightgrey")
+          .style("opacity", "0.05")
+      }
+      
+  
+      function toggleCheck(id){
+        //input.checked = !input.checked
+        let checkbox = document.getElementById(id);
+        checkbox.click()
+        if(checkbox.checked == false){
+            checkCount = checkCount -1;
+            unHighlight_teams(id)
+        }
+        else if(checkbox.checked == true){
+            highlight_team(id)
+            checkCount = checkCount +1;
+        }
+        return
+      }
+  
+      //create list of names 
+      let teamNames = [];
+      for(let i=0;i<team_attributes.length;i++){
+        teamNames.push(team_attributes[i].team_long_name)
+      }
+      let teamList = document.getElementById('teamList');
+      default_teams = []
+      for(let i=0;i<teamNames.length;i++){
+          //add player names to list
+          let entry = document.createElement('li');
+          let container = document.createElement('label');
+          container.setAttribute("class", "container")
+          container.appendChild(document.createTextNode(teamNames[i]));
+          //create checkboxes for each player
+          // let player_api_id = get_player_id(playerNames[i])
+          // let player_name = get_player_name(player_api_id)
+          let input = document.createElement('input');
+          input.setAttribute("type", "checkbox");
+          if(default_teams.includes(teamNames[i])){
+              input.checked = true
+          }else{
+              input.checked = false;
+          }
+          //add interactiveness
+          input.id = teamNames[i];
+          input.onclick= function() {
+              toggleCheck(input.id);
+          }
+          container.appendChild(input);
+          let checkmark = document.createElement('span');
+          checkmark.setAttribute("class", "checkmark");
+          container.appendChild(checkmark);
+          entry.appendChild(container)
+          teamList.appendChild(entry);
+      }
+  </script>
+</body>
+
+</html>

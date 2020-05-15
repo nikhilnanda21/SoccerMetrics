@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style>
+        #myInput {
+        background-image: url('./css/searchicon.png'); /* Add a search icon to input */
+        background-position: 13px 10px; /* Position the search icon */
+        background-repeat: no-repeat; /* Do not repeat the icon image */
+        background-size: 20px 20px;
+        position:relative;
+        left:850px;
+        top:200px;
+        width:15%;
+        font-size: 13.8px; /* Increase font-size */
+        padding: 12px 20px 12px 40px; /* Add some padding */
+        border: 1px solid #ddd; /* Add a grey border */
+        }
+
+        #playerList {
+        /* Remove default list styling */
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        position:relative;
+        left:850px;
+        top:200px;
+        height:200px;
+        width:20%;
+        overflow:hidden;
+        overflow-y:scroll;
+        }
+
+        #playerList li {
+        border: 1px solid #ddd; /* Add a border to all links */
+        margin-top: -1px; /* Prevent double borders */
+        background-color: #f6f6f6; /* Grey background color */
+        padding: 12px; /* Add some padding */
+        text-decoration: none; /* Remove default text underline */
+        color: black; /* Add a black text color */
+        display: block; /* Make it into a block element to fill the whole list */
+        }
+
+        #playerList li:hover:not(.header) {
+        background-color: #eee; /* Add a hover effect to all links, except for headers */
+        }
+
+        body {
+		  overflow: hidden;
+		  margin: 0;
+		  font-size: 14px;
+		  font-family: "Helvetica Neue", Helvetica;
+		}
+
+		#chart {
+		  position: absolute;
+		  top: 50px;
+		  left: 100px;
+		}	
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+            }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+           background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+    
+
+    </style>
+    <script>
+        function searchPlayer() {
+          // Declare variables
+          var input, filter, ul, li, a, i, txtValue;
+          input = document.getElementById('myInput');
+          filter = input.value.toUpperCase();
+          ul = document.getElementById("playerList");
+          li = ul.getElementsByTagName('li');
+        
+          // Loop through all list items, and hide those who don't match the search query
+          for (i = 0; i < li.length; i++) {
+            txtValue = li[i].textContent || li[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              li[i].style.display = "";
+            } else {
+              li[i].style.display = "none";
+            }
+          }
+        }
+    </script>
+  <title>Radar chart</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script  src="RadarChart.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="players.js"></script>
+    <script src="players_attributes.js"></script>
+	<style>
+		body {
+		  overflow: hidden;
+		  margin: 0;
+		  font-size: 14px;
+		  font-family: "Helvetica Neue", Helvetica;
+		}
+
+		#chart {
+		  position: absolute;
+		  top: 50px;
+		  left: 100px;
+		}	
+	</style>
+  </head>
+  <body>
+    <div id="body">
+	  <div id="chart"></div>
+    </div>
+	<input type="text" id="myInput" onkeyup="searchPlayer()" placeholder="Search for players..">
+
+<ul id="playerList"></ul>
+    <script type="text/javascript" src="script.js"></script>
+
+  </body>
+</html>
